@@ -5,10 +5,37 @@ from django.contrib.auth.models import User
 from django.contrib.auth import login
 from django.utils import timezone
 from .models import Movie, Review, Comment
+from django.db.models import Avg, Q
+from .forms import MovieFilterForm
+
 
 def movie_list(request):
     movies = Movie.objects.all()
-    return render(request, 'movies/movie_list.html', {'movies': movies})
+    form = MovieFilterForm(request.GET)
+
+    if form.is_valid():
+        query = form.cleaned_data.get('query')
+        genre = form.cleaned_data.get('genre')
+        min_year = form.cleaned_data.get('min_year')
+        max_year = form.cleaned_data.get('max_year')
+        min_rating = form.cleaned_data.get('min_rating')
+        max_rating = form.cleaned_data.get('max_rating')
+
+        # Arama kriterlerine göre sorguyu filtrele
+        if query:
+            movies = movies.filter(title__icontains=query)
+        if genre:
+            movies = movies.filter(genre=genre)
+        if min_year:
+            movies = movies.filter(release_date__year__gte=min_year)
+        if max_year:
+            movies = movies.filter(release_date__year__lte=max_year)
+        if min_rating:
+            movies = [movie for movie in movies if movie.average_rating and movie.average_rating >= min_rating]
+        if max_rating:
+            movies = [movie for movie in movies if movie.average_rating and movie.average_rating <= max_rating]
+
+    return render(request, 'movies/movie_list.html', {'movies': movies, 'form': form})
 
 def movie_detail(request, id):
     movie = get_object_or_404(Movie, id=id)
@@ -74,3 +101,5 @@ def register(request):
         else:
             messages.error(request, "Şifreler eşleşmiyor.")
     return render(request, 'movies/register.html')
+
+
