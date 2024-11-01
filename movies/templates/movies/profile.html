@@ -1,0 +1,21 @@
+{% extends 'movies/base.html' %}
+
+{% block title %}{{ user.username }}'nin Profili{% endblock %}
+
+{% block content %}
+    <h1>{{ user.username }}'nin Profili</h1>
+    <p>Katılma Tarihi: {{ user.date_joined|date:"d M Y" }}</p>
+
+    <h2 class="mt-4">İncelemeler</h2>
+    <ul class="list-group mt-3">
+        {% for review in reviews %}
+            <li class="list-group-item">
+                <strong>Film:</strong> <a href="{% url 'movie_detail' review.movie.id %}">{{ review.movie.title }}</a><br>
+                <strong>Puan:</strong> {{ review.rating }} / 10<br>
+                <strong>İnceleme:</strong> {{ review.review_text }}
+            </li>
+        {% empty %}
+            <p>Henüz inceleme yapılmamış.</p>
+        {% endfor %}
+    </ul>
+{% endblock %}

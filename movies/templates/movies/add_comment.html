@@ -1,0 +1,15 @@
+{% extends 'movies/base.html' %}
+
+{% block title %}Yorum Ekle{% endblock %}
+
+{% block content %}
+    <h1>Yorum Ekle</h1>
+    <form method="post">
+        {% csrf_token %}
+        <div class="mb-3">
+            <label for="content" class="form-label">Yorumunuz</label>
+            <textarea name="content" id="content" class="form-control" rows="4" required></textarea>
+        </div>
+        <button type="submit" class="btn btn-primary">Gönder</button>
+    </form>
+{% endblock %}

@@ -1,0 +1,29 @@
+{% extends 'movies/base.html' %}
+
+{% block title %}Giriş Yap{% endblock %}
+
+{% block content %}
+    <h1 class="mb-4">Giriş Yap</h1>
+    <form method="post" class="mb-3">
+        {% csrf_token %}
+        <div class="mb-3">
+            <label for="username" class="form-label">Kullanıcı Adı</label>
+            <input type="text" name="username" id="username" class="form-control" required>
+        </div>
+        <div class="mb-3">
+            <label for="password" class="form-label">Şifre</label>
+            <input type="password" name="password" id="password" class="form-control" required>
+        </div>
+        <button type="submit" class="btn btn-primary w-100">Giriş Yap</button>
+    </form>
+
+    <p>Henüz üye değil misiniz? <a href="{% url 'register' %}">Kayıt Ol</a></p>
+
+    {% if messages %}
+        <ul class="alert alert-info">
+            {% for message in messages %}
+                <li>{{ message }}</li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+{% endblock %}

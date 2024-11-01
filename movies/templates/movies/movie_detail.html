@@ -1,0 +1,51 @@
+{% extends 'movies/base.html' %}
+
+{% block title %}{{ movie.title }} - Detaylar{% endblock %}
+
+{% block content %}
+    <h1>{{ movie.title }}</h1>
+    <p><strong>Tür:</strong> {{ movie.genre }}</p>
+    <p><strong>Yayın Tarihi:</strong> {{ movie.release_date }}</p>
+    <p><strong>Açıklama:</strong> {{ movie.description }}</p>
+
+    <h2 class="mt-4">İncelemeler</h2>
+    <ul class="list-group mt-3">
+        {% for review in reviews %}
+            <li class="list-group-item">
+                <strong>{{ review.user.username }}</strong>: {{ review.review_text }} (Puan: {{ review.rating }} / 10)
+
+                <!-- Yorumları Göster -->
+                <h5 class="mt-3">Yorumlar</h5>
+                <ul class="list-group">
+                    {% for comment in review.comments.all %}
+                        <li class="list-group-item">
+                            <strong>{{ comment.user.username }}</strong>: {{ comment.content }}
+                            <small class="text-muted">{{ comment.created_at|date:"d M Y H:i" }}</small>
+                        </li>
+                    {% empty %}
+                        <p>Bu inceleme için henüz yorum yapılmamış.</p>
+                    {% endfor %}
+                </ul>
+
+                <!-- Yorum Yap Linki -->
+                <a href="{% url 'add_comment_to_review' review.id %}" class="btn btn-secondary mt-2">Yorum Yap</a>
+            </li>
+        {% endfor %}
+    </ul>
+
+    <!-- Film Yorumları -->
+    <h2 class="mt-5">Film Yorumları</h2>
+    <ul class="list-group mt-3">
+        {% for comment in movie.comments.all %}
+            <li class="list-group-item">
+                <strong>{{ comment.user.username }}</strong>: {{ comment.content }}
+                <small class="text-muted">{{ comment.created_at|date:"d M Y H:i" }}</small>
+            </li>
+        {% empty %}
+            <p>Bu filme henüz yorum yapılmamış.</p>
+        {% endfor %}
+    </ul>
+
+    <!-- Film Yorum Ekleme Butonu -->
+    <a href="{% url 'add_comment_to_movie' movie.id %}" class="btn btn-secondary mt-3">Bu Filme Yorum Yap</a>
+{% endblock %}
